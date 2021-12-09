@@ -188,6 +188,23 @@ describe('CSS Plugin', () => {
             ]);
         });
 
+        // Those are valid in Svelte, but invalid in CSS pseudo classes:
+        //   :global(> ...)
+        //   :global(+ ...)
+        //   :global(~ ...)
+        it('- no diagnostic for direct combinator in :global', () => {
+            const { plugin, document } = setup(`
+              <div><slot /></div>
+              <style>
+                div :global(> *) {
+                  color: red;
+                }
+              </style>
+            `);
+            const diagnostics = plugin.getDiagnostics(document);
+            assert.deepStrictEqual(diagnostics, []);
+        });
+
         it('- no diagnostics for sass', () => {
             const { plugin, document } = setup(
                 `<style lang="sass">
