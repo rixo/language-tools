@@ -191,4 +191,110 @@ describe('FindReferencesProvider', () => {
             }
         ]);
     });
+
+    it("doesn't mix up references of unresolved imported components", async () => {
+        const file = 'find-references-imported-components.svelte';
+        const uri = getUri(file);
+        const { provider, document } = setup(file);
+
+        const pos = Position.create(5, 2);
+        const results = await provider.findReferences(document, pos, {
+            includeDeclaration: true
+        });
+
+        assert.deepStrictEqual(results, [
+            {
+                uri,
+                range: {
+                    start: {
+                        line: 1,
+                        character: 9
+                    },
+                    end: {
+                        line: 1,
+                        character: 12
+                    }
+                }
+            },
+            {
+                uri,
+                range: {
+                    start: {
+                        line: 5,
+                        character: 1
+                    },
+                    end: {
+                        line: 5,
+                        character: 4
+                    }
+                }
+            },
+            {
+                uri,
+                range: {
+                    start: {
+                        line: 7,
+                        character: 2
+                    },
+                    end: {
+                        line: 7,
+                        character: 5
+                    }
+                }
+            }
+        ]);
+    });
+
+    it('ignores references inside TSX generated code', async () => {
+        const file = 'find-references-ignore-generated-tsx.svelte';
+        const uri = getUri(file);
+        const { provider, document } = setup(file);
+
+        const pos = Position.create(3, 15);
+        const results = await provider.findReferences(document, pos, {
+            includeDeclaration: true
+        });
+
+        assert.deepStrictEqual(results, [
+            {
+                uri,
+                range: {
+                    start: {
+                        line: 1,
+                        character: 13
+                    },
+                    end: {
+                        line: 1,
+                        character: 16
+                    }
+                }
+            },
+            {
+                uri,
+                range: {
+                    start: {
+                        line: 3,
+                        character: 14
+                    },
+                    end: {
+                        line: 3,
+                        character: 17
+                    }
+                }
+            },
+            {
+                uri,
+                range: {
+                    start: {
+                        line: 7,
+                        character: 4
+                    },
+                    end: {
+                        line: 7,
+                        character: 7
+                    }
+                }
+            }
+        ]);
+    });
 });
