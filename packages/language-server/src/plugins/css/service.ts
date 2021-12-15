@@ -5,7 +5,9 @@ import {
     LanguageService,
     ICSSDataProvider
 } from 'vscode-css-languageservice';
+
 import { pesudoClass } from './features/svelte-selectors';
+import { getSvelteCSSLanguageService } from './SvelteCSSLanguageService';
 
 const customDataProvider: ICSSDataProvider = {
     providePseudoClasses() {
@@ -29,6 +31,7 @@ const customDataProvider: ICSSDataProvider = {
 };
 
 const [css, scss, less] = [
+    getSvelteCSSLanguageService,
     getCSSLanguageService,
     getSCSSLanguageService,
     getLESSLanguageService
